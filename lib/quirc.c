@@ -53,6 +53,10 @@ int quirc_resize(struct quirc *q, int w, int h)
 	size_t vars_byte_size;
 	struct quirc_flood_fill_vars *vars = NULL;
 
+	size_t olddim;
+	size_t newdim;
+	size_t mindim;
+
 	/*
 	 * XXX: w and h should be size_t (or at least unsigned) as negatives
 	 * values would not make much sense. The downside is that it would break
@@ -72,16 +76,16 @@ int quirc_resize(struct quirc *q, int w, int h)
 
 	/* compute the "old" (i.e. currently allocated) and the "new"
 	   (i.e. requested) image dimensions */
-	size_t olddim = q->w * q->h;
-	size_t newdim = w * h;
-	size_t min = (olddim < newdim ? olddim : newdim);
+	olddim = q->w * q->h;
+	newdim = w * h;
+	mindim = (olddim < newdim ? olddim : newdim);
 
 	/*
 	 * copy the data into the new buffer, avoiding (a) to read beyond the
 	 * old buffer when the new size is greater and (b) to write beyond the
 	 * new buffer when the new size is smaller, hence the min computation.
 	 */
-	(void)memcpy(image, q->image, min);
+	(void)memcpy(image, q->image, mindim);
 
 	/* alloc a new buffer for q->pixels if needed */
 	if (!QUIRC_PIXEL_ALIAS_IMAGE) {

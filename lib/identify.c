@@ -816,22 +816,22 @@ static void jiggle_perspective(struct quirc *q, int index)
 		for (i = 0; i < 16; i++) {
 			int j = i >> 1;
 			int test;
-			double old = qr->c[j];
+			double oldval = qr->c[j];
 			double step = adjustments[j];
-			double new;
+			double newval;
 
 			if (i & 1)
-				new = old + step;
+				newval = oldval + step;
 			else
-				new = old - step;
+				newval = oldval - step;
 
-			qr->c[j] = new;
+			qr->c[j] = newval;
 			test = fitness_all(q, index);
 
 			if (test > best)
 				best = test;
 			else
-				qr->c[j] = old;
+				qr->c[j] = oldval;
 		}
 
 		for (i = 0; i < 8; i++)
